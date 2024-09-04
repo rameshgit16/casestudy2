@@ -1,6 +1,6 @@
 # Define AWS provider
 provider "aws" {
-  region = "your-region"
+  region = "ap-south-1"
 }
 
 # Create ALBs for blue and green environments
@@ -8,22 +8,22 @@ resource "aws_lb" "blue" {
   name               = "blue-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = ["subnet-a", "subnet-b"]
-  security_groups    = ["sg-12"]
+  subnets            = ["subnet-1", "subnet-2"]
+  security_groups    = ["launch-wizard-1"]
 }
 
 resource "aws_lb" "green" {
   name               = "green-alb"
   internal           = false
   load_balancer_type = "application"
-  subnets            = ["subnet-a", "subnet-b"]
-  security_groups    = ["sg-12"]
+  subnets            = ["subnet-1", "subnet-2"]
+  security_groups    = ["launch-wizard-1"]
 }
 
 # Create Route 53 DNS records
 resource "aws_route53_record" "blue_alias" {
-  zone_id = "Z08634952D9CIO97TA5KR"
-  name    = "blue-env.com"
+  zone_id = "Z0583004PCRDZT6CZ6SY"
+  name    = "green-blue-1.com"
   type    = "A"
   alias {
     name                   = aws_lb.blue.dns_name
@@ -33,8 +33,8 @@ resource "aws_route53_record" "blue_alias" {
 }
 
 resource "aws_route53_record" "green_alias" {
-  zone_id = "Z0841270X6R2Q945JI2G"
-  name    = "green-env.com"
+  zone_id = "Z058779914DL7EAL26MQ5"
+  name    = "blue-green-2.com"
   type    = "A"
   alias {
     name                   = aws_lb.green.dns_name
@@ -44,26 +44,26 @@ resource "aws_route53_record" "green_alias" {
 }
 
 # Define Auto Scaling Groups for blue and green environments
-resource "aws_autoscaling_group" "blue" {
-  name             = "blue-asg"
-  min_size         = 1
-  max_size         = 3
-  desired_capacity = 2
-  launch_template {
-    id = "lt-081c88dc4dd99523e"
-  }
-  vpc_zone_identifier = ["subnet-12345678", "subnet-87654321"]
-}
-
 resource "aws_autoscaling_group" "green" {
   name             = "green-asg"
   min_size         = 1
   max_size         = 3
   desired_capacity = 2
   launch_template {
-    id = "lt-04f6e1e667f16a696"
+    id = "lt-050f4e4a4ffb27c58"
   }
-  vpc_zone_identifier = ["subnet-12345678", "subnet-87654321"]
+  vpc_zone_identifier = ["subnet-1", "subnet-2"]
+}
+
+resource "aws_autoscaling_group" "blue" {
+  name             = "blue-asg"
+  min_size         = 1
+  max_size         = 3
+  desired_capacity = 2
+  launch_template {
+    id = "	lt-0fabed2daacb7e860"
+  }
+  vpc_zone_identifier = ["subnet-1", "subnet-2"]
 }
 
 # Configure SSL certificate for ALB listeners
