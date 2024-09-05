@@ -22,8 +22,8 @@ resource "aws_lb" "green" {
 
 # Create Route 53 DNS records
 resource "aws_route53_record" "blue_alias" {
-  zone_id = "Z0583004PCRDZT6CZ6SY"
-  name    = "green-blue-1.com"
+  zone_id = "Z07619922B5B5NYRVPYJ5"
+  name    = "blue.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.blue.dns_name
@@ -33,8 +33,8 @@ resource "aws_route53_record" "blue_alias" {
 }
 
 resource "aws_route53_record" "green_alias" {
-  zone_id = "Z058779914DL7EAL26MQ5"
-  name    = "blue-green-2.com"
+  zone_id = "Z07689963OQX6JK2L1F3F"
+  name    = "green.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.green.dns_name
@@ -81,7 +81,7 @@ resource "aws_lb_listener" "blue_https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn  = aws_acm_certificate.ssl_cert.arn
+  certificate_arn  = arn:aws:acm:ap-south-1:783764581360:certificate/dff3067e-54aa-4fc8-8393-a735e7abc706
 
   default_action {
     type             = "forward"
@@ -94,7 +94,7 @@ resource "aws_lb_listener" "green_https" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn  = aws_acm_certificate.ssl_cert.arn
+  certificate_arn  = arn:aws:acm:ap-south-1:783764581360:certificate/dff3067e-54aa-4fc8-8393-a735e7abc706
 
   default_action {
     type             = "forward"
@@ -107,20 +107,20 @@ resource "aws_lb_target_group" "blue" {
   name     = "blue-target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "vpc-09daf5961f1d89e76"
+  vpc_id   = "vpc-0a9ffdd77689f21d4"
 }
 
 resource "aws_lb_target_group" "green" {
   name     = "green-target-group"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "vpc-09daf5961f1d89e76"
+  vpc_id   = "vpc-0a9ffdd77689f21d4"
 }
 
 # Define Route 53 DNS records pointing to ALB endpoints
 resource "aws_route53_record" "blue_dns" {
-  zone_id = "Z08634952D9CIO97TA5KR"
-  name    = "blue-env.com"
+  zone_id = "Z07619922B5B5NYRVPYJ5"
+  name    = "blue.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.blue.dns_name
@@ -130,8 +130,8 @@ resource "aws_route53_record" "blue_dns" {
 }
 
 resource "aws_route53_record" "green_dns" {
-  zone_id = "Z0841270X6R2Q945JI2G"
-  name    = "green-env.com"
+  zone_id = "Z07689963OQX6JK2L1F3F"
+  name    = "green.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.green.dns_name
