@@ -210,22 +210,23 @@ Resources:
 
   # Route 53 Record for LoadBalancer1
    Route53Record1:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZoneId
-      Name: !Sub "lb1.${HostedZoneName}"
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt LoadBalancer1.DNSName
-        HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneID
+  Type: AWS::Route53::RecordSet
+  Properties:
+    HostedZoneId: !Ref HostedZoneId
+    Name: !Sub "lb1.${HostedZoneName}"
+    Type: A
+    AliasTarget:
+      DNSName: !GetAtt LoadBalancer1.DNSName
+      HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
 
   # Route 53 Record for LoadBalancer2
-  Route53Record2:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZoneId
-      Name: !Sub "lb2.${HostedZoneName}"
-      Type: A
-      AliasTarget:
-        DNSName: !GetAtt LoadBalancer2.DNSName
-        HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneID
+ Route53Record2:
+  Type: AWS::Route53::RecordSet
+  Properties:
+    HostedZoneId: !Ref HostedZoneId
+    Name: !Sub "lb2.${HostedZoneName}"
+    Type: A
+    AliasTarget:
+      DNSName: !GetAtt LoadBalancer2.DNSName
+      HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
+      
