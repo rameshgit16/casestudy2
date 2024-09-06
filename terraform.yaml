@@ -208,8 +208,7 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate2
         Version: !GetAtt LaunchTemplate2.LatestVersionNumber
-
-  # Route 53 Record for LoadBalancer1
+# Route 53 Record for LoadBalancer1
 Route53Record1:
   Type: AWS::Route53::RecordSet
   Properties:
@@ -219,9 +218,8 @@ Route53Record1:
     AliasTarget:
       DNSName: !GetAtt LoadBalancer1.DNSName
       HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
- ImportResourceId: "Z07619922B5B5NYRVPYJ5"
 
-  # Route 53 Record for LoadBalancer2
+ # Route 53 Record for LoadBalancer2
  Route53Record2:
   Type: AWS::Route53::RecordSet
   Properties:
@@ -231,5 +229,4 @@ Route53Record1:
     AliasTarget:
       DNSName: !GetAtt LoadBalancer2.DNSName
       HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
- ImportResourceId: "Z03342881CFC4B5HPMTGO"
-      
+
