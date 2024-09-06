@@ -229,8 +229,8 @@ Resources:
       Name: "lb1.blue-green.in.net"
       Type: A
       AliasTarget:
-        DNSName: !GetAtt LoadBalancer1.DNSName
-        HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneID
+        DNSName: !GetAtt LoadBalancerOne.DNSName
+        HostedZoneId: !GetAtt LoadBalancerOne.CanonicalHostedZoneID
 
   # Route 53 Record for LoadBalancer2
   Route53Record2:
@@ -240,5 +240,5 @@ Resources:
       Name: "lb2.blue-green.in.net"
       Type: A
       AliasTarget:
-        DNSName: !GetAtt LoadBalancer2.DNSName
-        HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneID
+        DNSName: !GetAtt LoadBalancerTwo.DNSName
+        HostedZoneId: !GetAtt LoadBalancerTwo.CanonicalHostedZoneID
