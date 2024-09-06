@@ -4,10 +4,10 @@ Description: CloudFormation template for Route 53 records for Load Balancers.
 Parameters:
   HostedZoneName:
     Type: String
-    Description: "The name of the Route 53 Hosted Zone"
+    Description: "The name of the Route 53 Hosted Zone (e.g., blue-green.in.net)"
   HostedZoneId:
     Type: String
-    Description: "The ID of the Route 53 Hosted Zone"
+    Description: "The ID of the Route 53 Hosted Zone (e.g., Z07619922B5B5NYRVPYJ5)"
   LoadBalancer1DNS:
     Type: String
     Description: "DNS name of the first load balancer"
