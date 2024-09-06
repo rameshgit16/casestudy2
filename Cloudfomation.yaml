@@ -139,11 +139,11 @@ Resources:
       LaunchTemplateData:
         InstanceType: t2.micro
         ImageId: ami-08ee1453725d19cdb  # Replace with a valid AMI ID
-        SecurityGroupIds:
-          - !Ref InstanceSecurityGroup
         NetworkInterfaces:
           - AssociatePublicIpAddress: true
             DeviceIndex: 0
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
         TagSpecifications:
           - ResourceType: instance
             Tags:
@@ -157,11 +157,11 @@ Resources:
       LaunchTemplateData:
         InstanceType: t2.micro
         ImageId: ami-0e53db6fd757e38c7  # Replace with a valid AMI ID
-        SecurityGroupIds:
-          - !Ref InstanceSecurityGroup
         NetworkInterfaces:
           - AssociatePublicIpAddress: true
             DeviceIndex: 0
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
         TagSpecifications:
           - ResourceType: instance
             Tags:
