@@ -5,7 +5,7 @@ Parameters:
     Description: "The name of the Route 53 Hosted Zone"
   HostedZoneId:
     Type: String
-    Description: "The ID of the Route 53 hosted zone."
+    Description: "Z07619922B5B5NYRVPYJ5"
 
   CertificateArn:
     Type: String
