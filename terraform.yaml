@@ -1,5 +1,5 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template for 2 load balancers, auto-scaling groups, and Route 53 records.
+STemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for Route 53 records for Load Balancers.
 
 Parameters:
   HostedZoneName:
@@ -7,10 +7,13 @@ Parameters:
     Description: "The name of the Route 53 Hosted Zone"
   HostedZoneId:
     Type: String
-    Description: "The ID of the Route 53 Hosted Zone (e.g., Z07619922B5B5NYRVPYJ5)"
-  CertificateArn:
+    Description: "The ID of the Route 53 Hosted Zone"
+  LoadBalancer1DNS:
     Type: String
-    Description: "The ARN of the ACM certificate for HTTPS."
+    Description: "DNS name of the first load balancer"
+  LoadBalancer2DNS:
+    Type: String
+    Description: "DNS name of the second load balancer"
 
 Resources:
   # VPC
@@ -217,8 +220,8 @@ Resources:
       Name: !Sub "lb1.${HostedZoneName}"
       Type: A
       AliasTarget:
-        DNSName: !GetAtt LoadBalancer1.DNSName
-        HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
+        DNSName: !Ref LoadBalancer1DNS
+        HostedZoneId: !Ref HostedZoneId
 
   # Route 53 Record for LoadBalancer2
   Route53Record2:
@@ -228,5 +231,5 @@ Resources:
       Name: !Sub "lb2.${HostedZoneName}"
       Type: A
       AliasTarget:
-        DNSName: !GetAtt LoadBalancer2.DNSName
-        HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
+        DNSName: !Ref LoadBalancer2DNS
+        HostedZoneId: !Ref HostedZoneId
