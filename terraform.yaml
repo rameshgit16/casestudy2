@@ -1,3 +1,4 @@
+
 Parameters:
   HostedZoneName:
     Type: String
@@ -218,6 +219,7 @@ Resources:
     AliasTarget:
       DNSName: !GetAtt LoadBalancer1.DNSName
       HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
+      ImportResourceId: "Z07619922B5B5NYRVPYJ5"
 
   # Route 53 Record for LoadBalancer2
  Route53Record2:
@@ -229,4 +231,5 @@ Resources:
     AliasTarget:
       DNSName: !GetAtt LoadBalancer2.DNSName
       HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
+      ImportResourceId: "Z03342881CFC4B5HPMTGO"
       
