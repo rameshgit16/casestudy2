@@ -141,7 +141,7 @@ Resources:
       Port: 80
       Protocol: HTTP
       VpcId: !Ref VPC
-  Listener1:
+  Listener2:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
