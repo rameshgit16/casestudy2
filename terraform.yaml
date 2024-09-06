@@ -3,6 +3,10 @@ Parameters:
     Type: String
     Description: "The domain name for the hosted zone (e.g., blue-green.in.net)."
 
+  HostedZoneId:
+    Type: String
+    Description: "The ID of the Route 53 hosted zone."
+
   CertificateArn:
     Type: String
     Description: "The ARN of the ACM certificate for HTTPS."
@@ -205,10 +209,10 @@ Resources:
         Version: !GetAtt LaunchTemplate2.LatestVersionNumber
 
   # Route 53 Record for LoadBalancer1
-  Route53Record1:
+   Route53Record1:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Ref HostedZoneName
+      HostedZoneId: !Ref HostedZoneId
       Name: !Sub "lb1.${HostedZoneName}"
       Type: A
       AliasTarget:
@@ -219,7 +223,7 @@ Resources:
   Route53Record2:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Ref HostedZoneName
+      HostedZoneId: !Ref HostedZoneId
       Name: !Sub "lb2.${HostedZoneName}"
       Type: A
       AliasTarget:
