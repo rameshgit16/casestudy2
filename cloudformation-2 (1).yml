@@ -1,0 +1,244 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template to create two Auto Scaling Groups, Target Groups, Load Balancers, and Route 53 records.
+
+Resources:
+  # VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: CustomVPC
+ # Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: MyInternetGateway
+
+  # Attach Internet Gateway to VPC
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Public Subnet
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet1
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: PublicSubnet2        
+
+  # Route Table for the Public Subnet
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: PublicRouteTable
+
+  # Public Route (0.0.0.0/0) to the Internet Gateway
+  PublicRoute:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Associate Route Table with the Public Subnet
+  RouteTableAssociationforpublicsubnet1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref RouteTable
+  # Associate Route Table with the Public Subnet
+  RouteTableAssociationforpublicsubnet2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref RouteTable
+  # Security Group for EC2 instances
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: "Allow HTTP and HTTPS traffic"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Security Group for Load Balancers
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: "Allow HTTPS traffic"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+  LoadBalancerOne:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Scheme: internal
+      Subnets:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+  TargetGroup1:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref VPC
+  Listener1:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup1
+      LoadBalancerArn: !Ref LoadBalancerOne
+      Port: 443
+      Protocol: HTTPS
+      SslPolicy: ELBSecurityPolicy-2016-08
+      Certificates:
+        - CertificateArn: arn:aws:acm:region:account-id:certificate/certificate-id   
+  LoadBalancerTwo:
+    Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
+    Properties:
+      Scheme: internal
+      Subnets:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+  TargetGroup2:
+    Type: 'AWS::ElasticLoadBalancingV2::TargetGroup'
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref VPC
+  Listener1:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup1
+      LoadBalancerArn: !Ref LoadBalancerTwo
+      Port: 443
+      Protocol: HTTPS
+      SslPolicy: ELBSecurityPolicy-2016-08
+      Certificates:
+        - CertificateArn: arn:aws:acm:region:account-id:certificate/certificate-id       
+  # Launch Template for ASG1
+  LaunchTemplate1:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        InstanceType: t2.micro
+        ImageId: ami-08ee1453725d19cdb  # Replace with a valid AMI ID
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true
+            DeviceIndex: 0
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: EC2Instance1
+
+  # Launch Template for ASG2
+  LaunchTemplate2:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        InstanceType: t2.micro
+        ImageId: ami-0e53db6fd757e38c7  # Replace with a valid AMI ID
+        SecurityGroupIds:
+          - !Ref InstanceSecurityGroup
+        NetworkInterfaces:
+          - AssociatePublicIpAddress: true
+            DeviceIndex: 0
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: EC2Instance2
+
+  # Auto Scaling Group for EC2Instance1
+  AutoScalingGroup1:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      MinSize: 1
+      MaxSize: 3
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref TargetGroup1
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate1
+        Version: !GetAtt LaunchTemplate1.LatestVersionNumber
+
+  # Auto Scaling Group for EC2Instance2
+  AutoScalingGroup2:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref PublicSubnet2
+        - !Ref PublicSubnet1
+      MinSize: 1
+      MaxSize: 3
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref TargetGroup2
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate2
+        Version: !GetAtt LaunchTemplate2.LatestVersionNumber
+
+  # Route 53 Record for LoadBalancer1
+  Route53Record1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: "blue-green.in.net"  # Replace with your hosted zone
+      Name: "lb1.blue-green.in.net"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer1.DNSName
+        HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneID
+
+  # Route 53 Record for LoadBalancer2
+  Route53Record2:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: "blue-green.in.net"  # Replace with your hosted zone
+      Name: "lb2.blue-green.in.net"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer2.DNSName
+        HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneID
