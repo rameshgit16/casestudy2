@@ -2,8 +2,7 @@
 Parameters:
   HostedZoneName:
     Type: String
-    Description: "The domain name for the hosted zone (e.g., blue-green.in.net)."
-
+    Description: "The name of the Route 53 Hosted Zone"
   HostedZoneId:
     Type: String
     Description: "The ID of the Route 53 hosted zone."
