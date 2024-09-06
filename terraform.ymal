@@ -1,9 +1,9 @@
 Parameters:
   HostedZoneName:
     Type: String
-    Description: "blue-green.in.net"
+    Description: "The domain name for the hosted zone (e.g., blue-green.in.net)."
 
-  CertificateArn: "arn:aws:acm:ap-south-1:783764581360:certificate/dff3067e-54aa-4fc8-8393-a735e7abc706"
+  CertificateArn:
     Type: String
     Description: "The ARN of the ACM certificate for HTTPS."
 
@@ -209,7 +209,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Ref HostedZoneName
-      Name: "lb1.!Ref HostedZoneName"
+      Name: !Sub "lb1.${HostedZoneName}"
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer1.DNSName
@@ -220,7 +220,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Ref HostedZoneName
-      Name: "lb2.!Ref HostedZoneName"
+      Name: !Sub "lb2.${HostedZoneName}"
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer2.DNSName
