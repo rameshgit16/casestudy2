@@ -8,13 +8,13 @@ Parameters:
     Description: "The ID of the Route 53 Hosted Zone (e.g., Z07619922B5B5NYRVPYJ5)"
   CertificateArn:
     Type: String
-    Description: "The ARN of the ACM certificate for HTTPS."
+    Description: "The ARN of the ACM certificate for HTTPS.(e.g., arn:aws:acm:ap-south-1:783764581360:certificate/dff3067e-54aa-4fc8-8393-a735e7abc706)"
   LoadBalancer1DNS:
     Type: String
-    Description: "DNS name of the first load balancer"
+    Description: "DNS name of the first load balancer(e.g., lb-1)"
   LoadBalancer2DNS:
     Type: String
-    Description: "DNS name of the second load balancer"
+    Description: "DNS name of the second load balancer(e.g., lb-2)"
 
 Resources:
   # VPC
