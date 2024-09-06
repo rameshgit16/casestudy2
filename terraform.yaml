@@ -1,3 +1,5 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template for 2 load balancers, auto-scaling groups, and Route 53 records.
 
 Parameters:
   HostedZoneName:
@@ -5,8 +7,7 @@ Parameters:
     Description: "The name of the Route 53 Hosted Zone"
   HostedZoneId:
     Type: String
-    Description: "Z07619922B5B5NYRVPYJ5"
-
+    Description: "The ID of the Route 53 Hosted Zone (e.g., Z07619922B5B5NYRVPYJ5)"
   CertificateArn:
     Type: String
     Description: "The ARN of the ACM certificate for HTTPS."
@@ -207,25 +208,25 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref LaunchTemplate2
         Version: !GetAtt LaunchTemplate2.LatestVersionNumber
-# Route 53 Record for LoadBalancer1
-Route53Record1:
-  Type: AWS::Route53::RecordSet
-  Properties:
-    HostedZoneId: !Ref HostedZoneId
-    Name: !Sub "lb1.${HostedZoneName}"
-    Type: A
-    AliasTarget:
-      DNSName: !GetAtt LoadBalancer1.DNSName
-      HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
-# Route 53 Record for LoadBalancer2
-Route53Record2:
-  Type: AWS::Route53::RecordSet
-  Properties:
-    HostedZoneId: !Ref HostedZoneId
-    Name: !Sub "lb2.${HostedZoneName}"
-    Type: A
-    AliasTarget:
-      DNSName: !GetAtt LoadBalancer2.DNSName
-      HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
 
+  # Route 53 Record for LoadBalancer1
+  Route53Record1:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub "lb1.${HostedZoneName}"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer1.DNSName
+        HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
 
+  # Route 53 Record for LoadBalancer2
+  Route53Record2:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub "lb2.${HostedZoneName}"
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer2.DNSName
+        HostedZoneId: !GetAtt LoadBalancer2.CanonicalHostedZoneId
