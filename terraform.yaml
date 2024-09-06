@@ -6,6 +6,9 @@ Parameters:
   HostedZoneId:
     Type: String
     Description: "The ID of the Route 53 Hosted Zone (e.g., Z07619922B5B5NYRVPYJ5)"
+  CertificateArn:
+    Type: String
+    Description: "The ARN of the ACM certificate for HTTPS."
   LoadBalancer1DNS:
     Type: String
     Description: "DNS name of the first load balancer"
