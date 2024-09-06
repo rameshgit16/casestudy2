@@ -216,7 +216,7 @@ Route53Record1:
     Type: A
     AliasTarget:
       DNSName: !GetAtt LoadBalancer1.DNSName
-      HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId      
+      HostedZoneId: !GetAtt LoadBalancer1.CanonicalHostedZoneId
 # Route 53 Record for LoadBalancer2
 Route53Record2:
   Type: AWS::Route53::RecordSet
