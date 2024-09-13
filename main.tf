@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "ap-south-1"
 }
 
 # VPC and Subnets
@@ -10,13 +10,13 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
-  availability_zone = "us-west-2a"
+  availability_zone = "ap-south-1a"
 }
 
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
-  availability_zone = "us-west-2b"
+  availability_zone = "ap-south-1b"
 }
 
 # Security Groups for EC2 and ALB
@@ -59,14 +59,14 @@ resource "aws_security_group" "lb" {
 # EC2 Auto Scaling Groups (Blue/Green)
 resource "aws_launch_configuration" "blue" {
   name          = "blue-launch-configuration"
-  image_id      = "ami-0c55b159cbfafe1f0"  # Update with valid AMI
+  image_id      = "ami-0c2af51e265bd5e0e"  # Update with valid AMI
   instance_type = "t2.micro"
   security_groups = [aws_security_group.ec2.id]
 }
 
 resource "aws_launch_configuration" "green" {
   name          = "green-launch-configuration"
-  image_id      = "ami-0c55b159cbfafe1f0"  # Update with valid AMI
+  image_id      = "ami-0522ab6e1ddcc7055"  # Update with valid AMI
   instance_type = "t2.micro"
   security_groups = [aws_security_group.ec2.id]
 }
@@ -137,12 +137,12 @@ resource "aws_lb_listener" "http" {
 
 # Route 53 DNS Configuration
 resource "aws_route53_zone" "main" {
-  name = "example.com"
+  name = "blue-green.in.net"
 }
 
 resource "aws_route53_record" "blue" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "blue.example.com"
+  name    = "blue.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.app_lb.dns_name
@@ -153,7 +153,7 @@ resource "aws_route53_record" "blue" {
 
 resource "aws_route53_record" "green" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "green.example.com"
+  name    = "green.blue-green.in.net"
   type    = "A"
   alias {
     name                   = aws_lb.app_lb.dns_name
@@ -174,7 +174,7 @@ resource "aws_lb_listener_rule" "green_rule" {
 
   condition {
     host_header {
-      values = ["green.example.com"]
+      values = ["green.blue-green.in.net"]
     }
   }
 }
