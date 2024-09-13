@@ -22,24 +22,32 @@ resource "aws_route_table" "public" {
   }
 }
 
+# Public Subnet 1
 resource "aws_subnet" "public_1" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-south-1a"
-  
-  # Associate the public subnet with the public route table
-  route_table_id = aws_route_table.public.id
 }
 
+# Public Subnet 2
 resource "aws_subnet" "public_2" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.3.0/24"
   availability_zone = "ap-south-1b"
-  
-  # Associate the public subnet with the public route table
+}
+
+# Associate public subnets with the public route table
+resource "aws_route_table_association" "public_1_association" {
+  subnet_id      = aws_subnet.public_1.id
   route_table_id = aws_route_table.public.id
 }
 
+resource "aws_route_table_association" "public_2_association" {
+  subnet_id      = aws_subnet.public_2.id
+  route_table_id = aws_route_table.public.id
+}
+
+# Private Subnet
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
