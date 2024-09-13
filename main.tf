@@ -7,10 +7,16 @@ resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 }
 
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_1" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "ap-south-1a"
+}
+
+resource "aws_subnet" "public_2" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.3.0/24"
+  availability_zone = "ap-south-1b"
 }
 
 resource "aws_subnet" "private" {
@@ -76,7 +82,7 @@ resource "aws_autoscaling_group" "blue" {
   max_size             = 2
   min_size             = 1
   launch_configuration = aws_launch_configuration.blue.id
-  vpc_zone_identifier  = [aws_subnet.public.id]
+  vpc_zone_identifier  = [aws_subnet.public_1.id]
 
   tag {
     key                 = "Name"
@@ -90,7 +96,7 @@ resource "aws_autoscaling_group" "green" {
   max_size             = 2
   min_size             = 1
   launch_configuration = aws_launch_configuration.green.id
-  vpc_zone_identifier  = [aws_subnet.public.id]
+  vpc_zone_identifier  = [aws_subnet.public_1.id]
 
   tag {
     key                 = "Name"
@@ -105,7 +111,7 @@ resource "aws_lb" "app_lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb.id]
-  subnets            = [aws_subnet.public.id]
+  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]  # Two subnets in different AZs
 
   enable_deletion_protection = false
 }
