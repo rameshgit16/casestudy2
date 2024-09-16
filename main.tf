@@ -18,7 +18,7 @@ resource "aws_route_table" "public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id  # Route all internet-bound traffic through the Internet Gateway
+    gateway_id = aws_internet_gateway.main.id 
   }
 }
 
@@ -94,14 +94,14 @@ resource "aws_security_group" "lb" {
 # EC2 Auto Scaling Groups (Blue/Green)
 resource "aws_launch_configuration" "blue" {
   name          = "blue-launch-configuration"
-  image_id      = "ami-0c2af51e265bd5e0e"  # Update with valid AMI
+  image_id      = "ami-0c2af51e265bd5e0e" 
   instance_type = "t2.micro"
   security_groups = [aws_security_group.ec2.id]
 }
 
 resource "aws_launch_configuration" "green" {
   name          = "green-launch-configuration"
-  image_id      = "ami-0522ab6e1ddcc7055"  # Update with valid AMI
+  image_id      = "ami-0522ab6e1ddcc7055" 
   instance_type = "t2.micro"
   security_groups = [aws_security_group.ec2.id]
 }
@@ -140,7 +140,7 @@ resource "aws_lb" "app_lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb.id]
-  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]  # Two subnets in different AZs
+  subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id] 
 
   enable_deletion_protection = false
 }
@@ -166,7 +166,7 @@ resource "aws_lb_listener" "http" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.blue.arn  # Initially directing traffic to blue
+    target_group_arn = aws_lb_target_group.blue.arn 
   }
 }
 
